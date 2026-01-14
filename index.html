@@ -14,19 +14,19 @@
         .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         [x-cloak] { display: none !important; }
         
-        /* 動漫風格濾鏡：讓真實照片看起來像動畫背景 */
-        .anime-filter {
+        /* 濾鏡：讓真實照片看起來色彩更鮮豔，有一點動漫感 */
+        .vibe-filter {
             object-fit: cover;
             height: 100%;
             width: 100%;
             transition: transform 0.5s ease;
-            filter: saturate(1.6) contrast(1.1) brightness(1.05); /* 提高飽和度與亮度 */
+            filter: saturate(1.3) contrast(1.1); 
         }
         
-        .img-container { overflow: hidden; position: relative; border-radius: 0.75rem; }
-        .img-container:hover .anime-filter { transform: scale(1.1); }
+        .img-container { overflow: hidden; position: relative; border-radius: 0.75rem; background-color: #e2e8f0; }
+        .img-container:hover .vibe-filter { transform: scale(1.1); }
         
-        /* 配色：Times 黃 + 沖繩藍 */
+        /* Times 租車的黃色 */
         .bg-times-yellow { background-color: #FFCC00; color: #333; }
         .text-times-yellow { color: #F5B700; }
         .bg-cartoon-blue { background-color: #60A5FA; }
@@ -53,16 +53,16 @@
          x-transition.opacity
          x-cloak>
         <div class="relative max-w-5xl w-full flex flex-col items-center">
-            <img :src="activeImage" class="w-auto max-h-[85vh] rounded-xl shadow-2xl border-4 border-white filter saturate-150 contrast-125">
+            <img :src="activeImage" class="w-auto max-h-[85vh] rounded-xl shadow-2xl border-4 border-white filter saturate-125 contrast-110">
             <p class="text-white mt-4 font-bold tracking-widest bg-blue-500/50 px-4 py-1 rounded-full backdrop-blur-md">
-                <i class="fas fa-image mr-2"></i>點擊關閉
+                <i class="fas fa-times-circle mr-2"></i>點擊關閉
             </p>
         </div>
     </div>
 
     <div class="relative h-[45vh] w-full overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1542023532-68048286a644?q=80&w=2000" 
-             alt="Okinawa Family" class="absolute inset-0 w-full h-full object-cover filter saturate-150 contrast-110 brightness-110">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=80" 
+             alt="Okinawa Beach" class="absolute inset-0 w-full h-full object-cover filter saturate-125 contrast-110">
         <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/10 to-transparent flex flex-col justify-end p-8">
             <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 drop-shadow-md">
                 星禹和爸爸媽媽阿嬤<br class="md:hidden">沖繩之旅
@@ -110,10 +110,10 @@
                             <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-blue-200 overflow-hidden">
                                 <div class="flex flex-col md:flex-row">
                                     
-                                    <div class="w-full md:w-56 h-56 md:h-auto relative cursor-zoom-in img-container flex-shrink-0 group/img bg-gray-100" 
+                                    <div class="w-full md:w-56 h-56 md:h-auto relative cursor-zoom-in img-container flex-shrink-0 group/img bg-gray-200" 
                                          @click.stop="activeImage = event.imgUrl">
                                         
-                                        <img :src="event.imgUrl" class="anime-filter" loading="lazy" alt="景點">
+                                        <img :src="event.imgUrl" class="vibe-filter" loading="lazy" alt="景點照片">
                                         
                                         <div class="absolute inset-0 bg-black/0 group-hover/img:bg-black/10 transition-colors flex items-center justify-center">
                                             <i class="fas fa-search-plus text-white opacity-0 group-hover/img:opacity-100 text-3xl drop-shadow-md transition-opacity"></i>
@@ -195,36 +195,36 @@
                                 time: '12:30', title: '抵達那霸機場', category: 'transport', categoryLabel: '抵達', 
                                 desc: '日本時間到達，前往國內線航廈外搭乘接駁車。', note: '出關後請尋找黃色的「Times Car Rental」旗幟或接駁車。',
                                 mapQuery: '那霸機場',
-                                // 飛機與藍天
-                                imgUrl: 'https://images.unsplash.com/photo-1542296332-2e44a996aa0b?q=80&w=800'
+                                // 飛機窗外景色
+                                imgUrl: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '14:00', title: 'Times 租車 那霸機場店', category: 'transport', categoryLabel: '租車', 
                                 desc: 'Times Car Rental (タイムズカー)。', note: '檢查嬰兒座椅是否安裝牢固。請準備好「台灣駕照」與「日文譯本」。Times 的招牌是黃色的喔！',
                                 mapQuery: 'タイムズカー 那覇空港店',
-                                // 黃色車或相關示意
-                                imgUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=800'
+                                // 黃色計程車示意 (代表Times黃色風格)
+                                imgUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '15:00', title: '瀨長島 Umikaji Terrace', category: 'food', categoryLabel: '下午茶', 
                                 desc: '白色希臘風建築，看飛機起降。', note: '推薦「幸福鬆餅」。階梯較多，建議阿嬤坐下方店面，不用爬太高。',
                                 mapQuery: '瀨長島Umikaji Terrace',
                                 // 白色建築與海
-                                imgUrl: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800'
+                                imgUrl: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '16:30', title: '民宿 Check-in', category: 'hotel', categoryLabel: '民宿', 
                                 desc: 'Travel Hostel naha-de.asobu', note: '位於那霸市中心，先讓阿嬤與寶寶午睡充電。記得找好付費停車場。',
                                 mapQuery: 'Travel Hostel naha-de.asobu',
-                                // 溫馨房間
-                                imgUrl: 'https://images.unsplash.com/photo-1522771753035-10a1c759dc8e?q=80&w=800'
+                                // 舒適的房間
+                                imgUrl: 'https://images.unsplash.com/photo-1522771753035-10a1c759dc8e?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '18:30', title: '國際通', category: 'spot', categoryLabel: '逛街', 
                                 desc: '那霸最熱鬧的一條街，晚餐與採買。', note: '晚餐推薦：88牛排或民謠居酒屋。',
                                 mapQuery: '那霸國際通',
-                                // 繁華街景
-                                imgUrl: 'https://images.unsplash.com/photo-1570659637772-5b29334e35f8?q=80&w=800'
+                                // 日本街頭夜景
+                                imgUrl: 'https://images.unsplash.com/photo-1570659637772-5b29334e35f8?auto=format&fit=crop&w=800&q=80'
                             }
                         ]
                     },
@@ -236,22 +236,22 @@
                                 time: '09:30', title: '許田休息站', category: 'transport', categoryLabel: '休息', 
                                 desc: '沖繩最受歡迎的休息站，中途上廁所。', note: '務必在此購買水族館優惠門票，有阿嬤愛吃的黑糖冰淇淋。',
                                 mapQuery: '許田休息站',
-                                // 休息站/道路
-                                imgUrl: 'https://images.unsplash.com/photo-1565620731358-e8c14e1f705e?q=80&w=800'
+                                // 日本道路休息站氛圍
+                                imgUrl: 'https://images.unsplash.com/photo-1565620731358-e8c14e1f705e?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '11:30', title: '美麗海水族館', category: 'spot', categoryLabel: '景點', 
                                 desc: '欣賞黑潮之海巨大鯨鯊。', note: '13:00 有免費的海豚表演。午餐建議在園區內解決。',
                                 mapQuery: '沖繩美麗海水族館',
                                 // 鯨鯊
-                                imgUrl: 'https://images.unsplash.com/photo-1582967788606-a171f1080ca8?q=80&w=800'
+                                imgUrl: 'https://images.unsplash.com/photo-1582967788606-a171f1080ca8?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '17:30', title: '回民宿休息', category: 'hotel', categoryLabel: '休息', 
                                 desc: '長途車程後的中場休息。', note: '司機與阿嬤補眠，晚上才有力氣吃飯。',
                                 mapQuery: 'Travel Hostel naha-de.asobu',
-                                // 休息/寶寶
-                                imgUrl: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=800'
+                                // 舒適的床鋪休息
+                                imgUrl: 'https://images.unsplash.com/photo-1621293954908-35655b31982e?auto=format&fit=crop&w=800&q=80'
                             }
                         ]
                     },
@@ -263,22 +263,22 @@
                                 time: '10:30', title: '港川外人住宅區', category: 'spot', categoryLabel: '景點', 
                                 desc: '美軍老宿舍改建的文青街道。', note: '必吃 oHacorte 水果塔。路較窄，開車請慢行。',
                                 mapQuery: '港川外人住宅',
-                                // 可愛小屋
-                                imgUrl: 'https://images.unsplash.com/photo-1522050212171-61b01dd24579?q=80&w=800'
+                                // 文青小屋風格
+                                imgUrl: 'https://images.unsplash.com/photo-1522050212171-61b01dd24579?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '13:30', title: '美國村 (American Village)', category: 'spot', categoryLabel: '景點', 
                                 desc: '充滿異國氛圍的購物區，海景步道。', note: '找間海景咖啡廳讓阿嬤坐下來吹冷氣，很好拍照。',
                                 mapQuery: '美濱美國村',
                                 // 摩天輪
-                                imgUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800'
+                                imgUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '18:30', title: 'San-A Naha Main Place', category: 'shopping', categoryLabel: '購物', 
                                 desc: '新都心地區當地人最愛的商場。', note: '超市很大，阿嬤應該會喜歡逛這裡的超市。',
                                 mapQuery: 'San-A Naha Main Place',
-                                // 商場內部
-                                imgUrl: 'https://images.unsplash.com/photo-1519567241046-7f570eee3d9f?q=80&w=800'
+                                // 購物中心內部
+                                imgUrl: 'https://images.unsplash.com/photo-1519567241046-7f570eee3d9f?auto=format&fit=crop&w=800&q=80'
                             }
                         ]
                     },
@@ -290,22 +290,22 @@
                                 time: '10:30', title: '波上宮', category: 'spot', categoryLabel: '景點', 
                                 desc: '懸崖上的神社，沖繩總鎮守。', note: '可買「書包御守」給寶寶。旁邊有沙灘。',
                                 mapQuery: '波上宮',
-                                // 神社
-                                imgUrl: 'https://images.unsplash.com/photo-1574068465063-e5e792c347db?q=80&w=800'
+                                // 紅色鳥居神社
+                                imgUrl: 'https://images.unsplash.com/photo-1574068465063-e5e792c347db?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '11:30', title: '浦添 PARCO CITY', category: 'shopping', categoryLabel: '購物', 
                                 desc: '全沖繩最大、育嬰設施最完善的商城。', note: '推薦 Akachan Honpo。午餐去美食街有無敵海景，阿嬤可以坐著看海。',
                                 mapQuery: 'PARCO CITY 沖繩',
-                                // 現代商場
-                                imgUrl: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=800'
+                                // 現代商場建築
+                                imgUrl: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '18:30', title: '晚餐：阿古豬火鍋', category: 'food', categoryLabel: '大餐', 
                                 desc: '享用沖繩特產 Agu 豬肉。', note: '推薦「まつもと」或「溫野菜」，請提前訂位。',
                                 mapQuery: '那霸 阿古豬火鍋',
-                                // 火鍋
-                                imgUrl: 'https://images.unsplash.com/photo-1542358826-64663c276326?q=80&w=800'
+                                // 火鍋肉片
+                                imgUrl: 'https://images.unsplash.com/photo-1542358826-64663c276326?auto=format&fit=crop&w=800&q=80'
                             }
                         ]
                     },
@@ -317,22 +317,22 @@
                                 time: '10:30', title: '系滿魚市場', category: 'food', categoryLabel: '美食', 
                                 desc: '現買現吃的生魚片、焗烤龍蝦。', note: '就在還車點附近，價格便宜新鮮，阿嬤最愛這味。',
                                 mapQuery: '系滿魚市場',
-                                // 魚市場/海鮮
-                                imgUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=800'
+                                // 魚市場攤位
+                                imgUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '12:00', title: 'Ashibinaa Outlet', category: 'shopping', categoryLabel: '購物', 
                                 desc: '回國前最後衝刺。', note: '戶外商場，若下雨可改去隔壁 iias。',
                                 mapQuery: 'Ashibinaa Outlet',
-                                // Outlet
-                                imgUrl: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?q=80&w=800'
+                                // 戶外購物中心
+                                imgUrl: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=800&q=80'
                             },
                             { 
                                 time: '16:00', title: '還車 / 機場', category: 'transport', categoryLabel: '返家', 
                                 desc: 'Times 還車後搭接駁車至機場。', note: '記得加滿油。機場國內線必買「豬肉蛋飯糰」。',
                                 mapQuery: 'タイムズカー 那覇空港店',
-                                // 飛機
-                                imgUrl: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800'
+                                // 機場航廈
+                                imgUrl: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=800&q=80'
                             }
                         ]
                     }
