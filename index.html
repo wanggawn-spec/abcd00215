@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沖繩慢活孝親之旅 | 5天4夜 (穩定圖床版)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        [x-cloak] { display: none !important; }
+        .thumb-img { object-fit: cover; height: 100%; width: 100%; transition: transform 0.5s ease; }
+        .img-container { overflow: hidden; position: relative; background-color: #f1f5f9; }
+        .img-container:hover .thumb-img { transform: scale(1.1); }
+        /* 讀取失敗時的佔位圖樣式 */
+        .img-error { display: flex; align-items: center; justify-content: center; background: #e2e8f0; color: #94a3b8; height: 100%; width: 100%; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'okinawa-blue': '#0077B6',
+                        'sand': '#FDFCDC',
+                        'sunset': '#FF9F1C',
+                        'ocean': '#023E8A'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-700" x-data="itinerary()">
+
+    <div x-show="activeImage" 
+         class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 cursor-pointer"
+         @click="activeImage = null"
+         x-transition.opacity
+         x-cloak>
+        <div class="relative max-w-5xl w-full max-h-screen flex flex-col items-center">
+            <img :src="activeImage" class="w-auto h-auto max-h-[85vh] max-w-full object-contain rounded shadow-2xl border border-white/20">
+            <p class="text-white/80 mt-4 text-sm tracking-widest font-light"><i class="fas fa-times mr-2"></i>點擊畫面關閉</p>
+        </div>
+    </div>
+
+    <div class="relative h-[45vh] w-full overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c78?q=80&w=2069&auto=format&fit=crop" alt="Okinawa" class="absolute inset-0 w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent flex flex-col justify-end p-8">
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 drop-shadow-xl">沖繩慢活孝親之旅</h1>
+            <p class="text-white/90 text-lg font-light flex items-center gap-2">
+                <span class="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm"><i class="fas fa-calendar-alt mr-2"></i>2026.01.17 - 01.21</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="sticky top-0 z-50 glass-nav border-b border-gray-200 shadow-sm overflow-x-auto no-scrollbar">
+        <div class="max-w-4xl mx-auto flex space-x-2 p-3 whitespace-nowrap px-4">
+            <template x-for="(day, index) in days" :key="index">
+                <button 
+                    @click="scrollToDay(index)"
+                    :class="{'bg-okinawa-blue text-white shadow-md scale-105': activeDay === index, 'text-gray-500 hover:bg-gray-100': activeDay !== index}"
+                    class="px-5 py-2 rounded-full text-sm font-bold transition-all duration-300"
+                    x-text="`Day ${index + 1}`">
+                </button>
+            </template>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto p-4 md:p-8 space-y-12 pb-32">
+        <template x-for="(day, dayIndex) in days" :key="dayIndex">
+            <div :id="`day-${dayIndex}`" class="scroll-mt-32 transition-opacity duration-700" x-intersect.threshold.0.1="activeDay = dayIndex">
+                
+                <div class="flex items-center mb-6 border-b border-slate-200 pb-4">
+                    <div class="bg-gradient-to-br from-okinawa-blue to-ocean text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold shadow-lg mr-4 flex-shrink-0">
+                        <span x-text="dayIndex + 1"></span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800" x-text="day.date"></h2>
+                        <p class="text-slate-500 text-sm font-medium" x-text="day.theme"></p>
+                    </div>
+                </div>
+
+                <div class="space-y-8 border-l-2 border-slate-200 ml-6 pl-6 relative">
+                    <template x-for="event in day.events">
+                        <div class="relative group" x-data="{ open: false }">
+                            <div class="absolute -left-[33px] top-6 w-4 h-4 rounded-full border-2 border-white shadow-md z-10 transition-colors" :class="getCategoryColor(event.category)"></div>
+
+                            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-slate-100 overflow-hidden">
+                                <div class="flex flex-col md:flex-row">
+                                    
+                                    <div class="w-full md:w-48 h-56 md:h-auto relative cursor-zoom-in img-container flex-shrink-0 group/img" 
+                                         @click.stop="activeImage = event.imgUrl">
+                                        <img :src="event.imgUrl" 
+                                             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1545569341-9eb8b30979d9?q=80&w=800&auto=format&fit=crop';"
+                                             class="thumb-img" loading="lazy" alt="景點照片">
+                                        
+                                        <div class="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors flex items-center justify-center">
+                                            <i class="fas fa-search-plus text-white opacity-0 group-hover/img:opacity-100 text-2xl drop-shadow-md transition-opacity"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1 p-5 flex flex-col justify-between">
+                                        <div @click="open = !open" class="cursor-pointer">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="text-sm font-bold text-slate-400 font-mono bg-slate-100 px-2 rounded" x-text="event.time"></span>
+                                                    <span class="px-2 py-0.5 rounded text-xs font-bold tracking-wide text-white" :class="getCategoryBadgeColor(event.category)" x-text="event.categoryLabel"></span>
+                                                </div>
+                                            </div>
+                                            <h3 class="text-lg font-bold text-slate-800 mb-1 flex items-center">
+                                                <span x-text="event.title"></span>
+                                            </h3>
+                                            <p class="text-slate-500 text-sm line-clamp-2" x-text="event.desc"></p>
+                                        </div>
+
+                                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-50">
+                                            <template x-if="event.mapQuery">
+                                                <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.mapQuery)}`" target="_blank" 
+                                                   class="map-btn flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-blue-100 transition-colors">
+                                                    <i class="fas fa-location-arrow"></i>
+                                                    <span>Google Map</span>
+                                                </a>
+                                            </template>
+                                            <button @click="open = !open" class="text-slate-400 text-sm hover:text-slate-600 flex items-center gap-1">
+                                                <span x-text="open ? '收起' : '詳情'"></span>
+                                                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div x-show="open" x-collapse x-cloak class="bg-slate-50 border-t border-slate-100 p-4 text-sm text-slate-600">
+                                    <div class="flex gap-2">
+                                        <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
+                                        <div>
+                                            <span class="font-bold text-slate-700">貼心提醒：</span>
+                                            <span x-text="event.note"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <script>
+        function itinerary() {
+            return {
+                activeDay: 0,
+                activeImage: null,
+                scrollToDay(index) {
+                    this.activeDay = index;
+                    document.getElementById(`day-${index}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                },
+                getCategoryColor(cat) {
+                    const map = { 'transport': 'bg-slate-400', 'food': 'bg-orange-400', 'spot': 'bg-blue-500', 'shopping': 'bg-pink-500', 'hotel': 'bg-indigo-500' };
+                    return map[cat] || 'bg-slate-400';
+                },
+                getCategoryBadgeColor(cat) {
+                    const map = { 'transport': 'bg-slate-400', 'food': 'bg-orange-400', 'spot': 'bg-blue-500', 'shopping': 'bg-pink-500', 'hotel': 'bg-indigo-500' };
+                    return map[cat] || 'bg-slate-400';
+                },
+                days: [
+                    {
+                        date: '1/17 (六) 初抵沖繩',
+                        theme: '適應右駕 · 海島風情',
+                        events: [
+                            { 
+                                time: '12:30', title: '抵達那霸機場', category: 'transport', categoryLabel: '抵達', 
+                                desc: '日本時間到達，前往國內線航廈外搭乘OTS接駁車。', note: '出關後請尋找 OTS 旗幟。',
+                                mapQuery: '那霸機場',
+                                // 飛機與藍天
+                                imgUrl: 'https://images.unsplash.com/photo-1542296332-2e44a996aa0b?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '14:00', title: 'OTS 臨空豐崎營業所', category: 'transport', categoryLabel: '租車', 
+                                desc: '辦理租車手續，檢查車況與安全座椅。', note: '請準備好「台灣駕照」與「日文譯本」。',
+                                mapQuery: 'OTS租車 臨空豐崎營業所',
+                                // 駕駛/兜風示意
+                                imgUrl: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '15:00', title: '瀨長島 Umikaji Terrace', category: 'food', categoryLabel: '下午茶', 
+                                desc: '白色希臘風建築，看飛機起降。', note: '推薦「幸福鬆餅」。階梯較多，建議長輩坐下方店面。',
+                                mapQuery: '瀨長島Umikaji Terrace',
+                                // 白色建築與海
+                                imgUrl: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '16:30', title: '民宿 Check-in', category: 'hotel', categoryLabel: '民宿', 
+                                desc: 'Travel Hostel naha-de.asobu', note: '位於那霸市中心，先讓長輩休息。記得找好付費停車場。',
+                                mapQuery: 'Travel Hostel naha-de.asobu',
+                                // 溫馨房間示意
+                                imgUrl: 'https://images.unsplash.com/photo-1522771753035-10a1c759dc8e?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '18:30', title: '國際通', category: 'spot', categoryLabel: '逛街', 
+                                desc: '那霸最熱鬧的一條街，晚餐與採買。', note: '晚餐推薦：88牛排或民謠居酒屋。',
+                                mapQuery: '那霸國際通',
+                                // 日本繁華街頭 (示意)
+                                imgUrl: 'https://images.unsplash.com/photo-1570659637772-5b29334e35f8?q=80&w=800&auto=format&fit=crop' 
+                            }
+                        ]
+                    },
+                    {
+                        date: '1/18 (日) 北部海洋藍',
+                        theme: '美麗海水族館 · 唯一長途',
+                        events: [
+                            { 
+                                time: '09:30', title: '許田休息站', category: 'transport', categoryLabel: '休息', 
+                                desc: '沖繩最受歡迎的休息站，中途上廁所。', note: '務必在此購買水族館優惠門票。',
+                                mapQuery: '許田休息站',
+                                // 道路與海景
+                                imgUrl: 'https://images.unsplash.com/photo-1565620731358-e8c14e1f705e?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '11:30', title: '美麗海水族館', category: 'spot', categoryLabel: '景點', 
+                                desc: '欣賞黑潮之海巨大鯨鯊。', note: '13:00 有免費的海豚表演。午餐建議在園區內解決。',
+                                mapQuery: '沖繩美麗海水族館',
+                                // 鯨鯊 (真實相似)
+                                imgUrl: 'https://images.unsplash.com/photo-1582967788606-a171f1080ca8?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '17:30', title: '回民宿休息', category: 'hotel', categoryLabel: '休息', 
+                                desc: '長途車程後的中場休息。', note: '司機與長輩補眠，晚上才有力氣吃飯。',
+                                mapQuery: 'Travel Hostel naha-de.asobu',
+                                // 放鬆/休息
+                                imgUrl: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=800&auto=format&fit=crop' 
+                            }
+                        ]
+                    },
+                    {
+                        date: '1/19 (一) 中部美式風情',
+                        theme: '港川外人住宅 · 美國村',
+                        events: [
+                            { 
+                                time: '10:30', title: '港川外人住宅區', category: 'spot', categoryLabel: '景點', 
+                                desc: '美軍老宿舍改建的文青街道。', note: '必吃 oHacorte 水果塔。路較窄，開車請慢行。',
+                                mapQuery: '港川外人住宅',
+                                // 可愛的小房子/文青風
+                                imgUrl: 'https://images.unsplash.com/photo-1522050212171-61b01dd24579?q=80&w=800&auto=format&fit=crop'
+                            },
+                            { 
+                                time: '13:30', title: '美國村 (American Village)', category: 'spot', categoryLabel: '景點', 
+                                desc: '充滿異國氛圍的購物區，海景步道。', note: '找間海景咖啡廳坐下來吹冷氣，很好拍照。',
+                                mapQuery: '美濱美國村',
+                                // 摩天輪 (經典標誌)
+                                imgUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '18:30', title: 'San-A Naha Main Place', category: 'shopping', categoryLabel: '購物', 
+                                desc: '新都心地區當地人最愛的商場。', note: '超市很大，晚餐可直接在美食街解決。',
+                                mapQuery: 'San-A Naha Main Place',
+                                // 購物中心內部
+                                imgUrl: 'https://images.unsplash.com/photo-1519567241046-7f570eee3d9f?q=80&w=800&auto=format&fit=crop' 
+                            }
+                        ]
+                    },
+                    {
+                        date: '1/20 (二) 舒適購物日',
+                        theme: '神社祈福 · PARCO CITY',
+                        events: [
+                            { 
+                                time: '10:30', title: '波上宮', category: 'spot', categoryLabel: '景點', 
+                                desc: '懸崖上的神社，沖繩總鎮守。', note: '可買「書包御守」給寶寶。旁邊有沙灘。',
+                                mapQuery: '波上宮',
+                                // 日本神社/鳥居
+                                imgUrl: 'https://images.unsplash.com/photo-1574068465063-e5e792c347db?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '11:30', title: '浦添 PARCO CITY', category: 'shopping', categoryLabel: '購物', 
+                                desc: '全沖繩最大、育嬰設施最完善的商城。', note: '推薦 Akachan Honpo。午餐去美食街有無敵海景。',
+                                mapQuery: 'PARCO CITY 沖繩',
+                                // 現代化商場
+                                imgUrl: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '18:30', title: '晚餐：阿古豬火鍋', category: 'food', categoryLabel: '大餐', 
+                                desc: '享用沖繩特產 Agu 豬肉。', note: '推薦「まつもと」或「溫野菜」，請提前訂位。',
+                                mapQuery: '那霸 阿古豬火鍋',
+                                // 火鍋/肉片
+                                imgUrl: 'https://images.unsplash.com/photo-1542358826-64663c276326?q=80&w=800&auto=format&fit=crop' 
+                            }
+                        ]
+                    },
+                    {
+                        date: '1/21 (三) 鮮魚與回程',
+                        theme: '系滿魚市場 · Outlet',
+                        events: [
+                            { 
+                                time: '10:30', title: '系滿魚市場', category: 'food', categoryLabel: '美食', 
+                                desc: '現買現吃的生魚片、焗烤龍蝦。', note: '就在還車點附近，價格便宜新鮮。',
+                                mapQuery: '系滿魚市場',
+                                // 生魚片/海鮮
+                                imgUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '12:00', title: 'Ashibinaa Outlet', category: 'shopping', categoryLabel: '購物', 
+                                desc: '回國前最後衝刺。', note: '戶外商場，若下雨可改去隔壁 iias。',
+                                mapQuery: 'Ashibinaa Outlet',
+                                // 戶外購物街
+                                imgUrl: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?q=80&w=800&auto=format&fit=crop' 
+                            },
+                            { 
+                                time: '16:00', title: '還車 / 機場', category: 'transport', categoryLabel: '返家', 
+                                desc: 'OTS 還車後搭接駁車至機場。', note: '記得加滿油。機場國內線必買「豬肉蛋飯糰」。',
+                                mapQuery: '那霸機場',
+                                // 飛機翅膀/旅行感
+                                imgUrl: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop' 
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    </script>
+</body>
+</html>
