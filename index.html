@@ -28,8 +28,9 @@
         
         /* Times 租車的黃色 */
         .bg-times-yellow { background-color: #FFCC00; color: #333; }
-        .text-times-yellow { color: #F5B700; }
-        .bg-cartoon-blue { background-color: #60A5FA; }
+        
+        /* 早餐的顏色 */
+        .bg-breakfast { background-color: #86efac; color: #064e3b; }
 
         /* 圖片載入失敗時的備用樣式 */
         .img-fallback {
@@ -49,8 +50,7 @@
                 extend: {
                     colors: {
                         'okinawa-blue': '#4EA1D3',
-                        'sand': '#FBF7F5',
-                        'times': '#FFCC00',
+                        'cartoon-blue': '#60A5FA',
                     }
                 }
             }
@@ -72,23 +72,26 @@
         </div>
     </div>
 
-    <div class="relative h-[45vh] w-full overflow-hidden">
+    <div class="relative h-[50vh] w-full overflow-hidden">
         <img src="https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
              alt="Okinawa Beach" class="absolute inset-0 w-full h-full object-cover filter saturate-125 contrast-110">
-        <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/10 to-transparent flex flex-col justify-end p-8">
-            <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 drop-shadow-md">
-                星禹和爸爸媽媽阿嬤<br class="md:hidden">沖繩之旅
+        <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/20 to-transparent flex flex-col justify-end p-8">
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md leading-tight">
+                星禹和爸爸媽媽阿嬤<br>沖繩之旅
             </h1>
-            <p class="text-white/95 text-lg font-bold flex items-center gap-2">
-                <span class="bg-white/20 px-4 py-1 rounded-full backdrop-blur-md border border-white/30">
+            <div class="flex flex-wrap gap-3">
+                <span class="bg-white/20 px-4 py-1 rounded-full backdrop-blur-md border border-white/30 text-white font-bold">
                     <i class="fas fa-calendar-alt mr-2"></i>2026.01.17 - 01.21
                 </span>
-            </p>
+                <span class="bg-times-yellow/90 px-4 py-1 rounded-full text-gray-800 font-bold shadow-lg">
+                    <i class="fas fa-car mr-2"></i>Times 租車
+                </span>
+            </div>
         </div>
     </div>
 
     <div class="sticky top-0 z-50 glass-nav border-b border-blue-100 shadow-sm overflow-x-auto no-scrollbar">
-        <div class="max-w-4xl mx-auto flex space-x-2 p-3 whitespace-nowrap px-4">
+        <div class="max-w-5xl mx-auto flex space-x-2 p-3 whitespace-nowrap px-4">
             <template x-for="(day, index) in days" :key="index">
                 <button 
                     @click="scrollToDay(index)"
@@ -105,24 +108,24 @@
             <div :id="`day-${dayIndex}`" class="scroll-mt-32 transition-opacity duration-700" x-intersect.threshold.0.1="activeDay = dayIndex">
                 
                 <div class="flex items-center mb-6 border-b-2 border-dashed border-blue-200 pb-4">
-                    <div class="bg-cartoon-blue text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow-lg mr-4 flex-shrink-0 border-4 border-blue-100">
+                    <div class="bg-cartoon-blue text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg mr-4 flex-shrink-0 border-4 border-blue-100">
                         <span x-text="dayIndex + 1"></span>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-800" x-text="day.date"></h2>
-                        <p class="text-slate-500 text-sm font-bold" x-text="day.theme"></p>
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-800" x-text="day.date"></h2>
+                        <p class="text-slate-500 text-sm font-bold mt-1" x-text="day.theme"></p>
                     </div>
                 </div>
 
-                <div class="space-y-8 border-l-4 border-blue-100 ml-6 pl-6 relative">
+                <div class="space-y-8 border-l-4 border-blue-100 ml-6 pl-8 relative">
                     <template x-for="event in day.events">
                         <div class="relative group" x-data="{ open: false }">
-                            <div class="absolute -left-[35px] top-6 w-5 h-5 rounded-full border-4 border-white shadow-sm z-10 transition-colors" :class="getCategoryColor(event.category)"></div>
+                            <div class="absolute -left-[43px] top-6 w-6 h-6 rounded-full border-4 border-white shadow-md z-10 transition-colors" :class="getCategoryColor(event.category)"></div>
 
                             <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-blue-200 overflow-hidden">
                                 <div class="flex flex-col md:flex-row">
                                     
-                                    <div class="w-full md:w-56 h-56 md:h-auto relative cursor-zoom-in img-container flex-shrink-0 group/img" 
+                                    <div class="w-full md:w-64 h-64 md:h-auto relative cursor-zoom-in img-container flex-shrink-0 group/img bg-gray-200" 
                                          @click.stop="activeImage = event.imgUrl">
                                         
                                         <img :src="event.imgUrl" 
@@ -140,42 +143,51 @@
                                         </div>
                                     </div>
 
-                                    <div class="flex-1 p-5 flex flex-col justify-between">
+                                    <div class="flex-1 p-5 md:p-6 flex flex-col justify-between">
                                         <div @click="open = !open" class="cursor-pointer">
-                                            <div class="flex items-center justify-between mb-2">
+                                            <div class="flex items-center justify-between mb-3">
                                                 <div class="flex items-center space-x-2">
                                                     <span class="text-sm font-bold text-slate-400 font-mono bg-slate-100 px-2 rounded-lg" x-text="event.time"></span>
-                                                    <span class="px-2 py-0.5 rounded text-xs font-bold tracking-wide shadow-sm" 
-                                                          :class="event.category === 'transport' ? 'bg-times-yellow' : getCategoryBadgeColor(event.category)" 
+                                                    <span class="px-3 py-1 rounded-full text-xs font-bold tracking-wide shadow-sm" 
+                                                          :class="getCategoryBadgeColor(event.category)" 
                                                           x-text="event.categoryLabel"></span>
                                                 </div>
                                             </div>
-                                            <h3 class="text-xl font-bold text-slate-800 mb-1 flex items-center">
+                                            <h3 class="text-xl font-bold text-slate-800 mb-2 flex items-center">
                                                 <span x-text="event.title"></span>
                                             </h3>
-                                            <p class="text-slate-500 text-sm line-clamp-2" x-text="event.desc"></p>
+                                            <p class="text-slate-600 text-sm leading-relaxed mb-3" x-text="event.desc"></p>
                                         </div>
 
-                                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-50">
+                                        <div class="flex flex-wrap items-center gap-3 mt-2 pt-4 border-t border-slate-50">
                                             <template x-if="event.mapQuery">
                                                 <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.mapQuery)}`" target="_blank" 
-                                                   class="map-btn flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-100 transition-colors border border-blue-100">
-                                                    <img src="https://www.google.com/images/branding/product/2x/maps_96in128dp.png" class="w-5 h-5">
+                                                   class="flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-blue-100 transition-colors border border-blue-100">
+                                                    <i class="fas fa-location-arrow text-red-500"></i>
                                                     <span>導航</span>
                                                 </a>
                                             </template>
-                                            <button @click="open = !open" class="text-slate-400 text-sm hover:text-slate-600 flex items-center gap-1 font-bold">
-                                                <span x-text="open ? '收起筆記' : '查看筆記'"></span>
+                                            
+                                            <template x-if="event.blogQuery">
+                                                <a :href="`https://www.youtube.com/results?search_query=${encodeURIComponent(event.blogQuery)}`" target="_blank" 
+                                                   class="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-red-100 transition-colors border border-red-100">
+                                                    <i class="fab fa-youtube text-red-600"></i>
+                                                    <span>看Vlog介紹</span>
+                                                </a>
+                                            </template>
+
+                                            <button @click="open = !open" class="ml-auto text-slate-400 text-sm hover:text-slate-600 flex items-center gap-1 font-bold">
+                                                <span x-text="open ? '收起' : '提醒'"></span>
                                                 <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div x-show="open" x-collapse x-cloak class="bg-yellow-50/50 border-t border-yellow-100 p-4 text-sm text-slate-700">
+                                <div x-show="open" x-collapse x-cloak class="bg-yellow-50/50 border-t border-yellow-100 p-5 text-sm text-slate-700">
                                     <div class="flex gap-3">
                                         <div class="mt-1"><i class="fas fa-sticky-note text-yellow-400 text-lg"></i></div>
-                                        <div>
+                                        <div class="flex-1">
                                             <span class="font-bold text-slate-800 block mb-1">給星禹爸媽的提醒：</span>
                                             <span x-text="event.note" class="leading-relaxed"></span>
                                         </div>
@@ -199,11 +211,18 @@
                     document.getElementById(`day-${index}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
                 },
                 getCategoryColor(cat) {
-                    const map = { 'transport': 'bg-times-yellow', 'food': 'bg-orange-400', 'spot': 'bg-blue-400', 'shopping': 'bg-pink-400', 'hotel': 'bg-indigo-400' };
+                    const map = { 'transport': 'bg-times-yellow', 'food': 'bg-orange-400', 'spot': 'bg-cartoon-blue', 'shopping': 'bg-pink-400', 'hotel': 'bg-indigo-400', 'breakfast': 'bg-green-400' };
                     return map[cat] || 'bg-gray-400';
                 },
                 getCategoryBadgeColor(cat) {
-                    const map = { 'transport': 'bg-times-yellow text-gray-800', 'food': 'bg-orange-400 text-white', 'spot': 'bg-blue-400 text-white', 'shopping': 'bg-pink-400 text-white', 'hotel': 'bg-indigo-400 text-white' };
+                    const map = { 
+                        'transport': 'bg-times-yellow text-gray-900', 
+                        'food': 'bg-orange-400 text-white', 
+                        'spot': 'bg-cartoon-blue text-white', 
+                        'shopping': 'bg-pink-400 text-white', 
+                        'hotel': 'bg-indigo-400 text-white',
+                        'breakfast': 'bg-green-100 text-green-700'
+                    };
                     return map[cat] || 'bg-gray-400 text-white';
                 },
                 days: [
@@ -213,38 +232,48 @@
                         events: [
                             { 
                                 time: '12:30', title: '抵達那霸機場', category: 'transport', categoryLabel: '抵達', 
-                                desc: '日本時間到達，前往國內線航廈外搭乘接駁車。', note: '出關後請尋找黃色的「Times Car Rental」旗幟或接駁車。',
+                                desc: '日本時間到達，前往國內線航廈外搭乘 Times 接駁車。', 
+                                note: '出關後請往國內線方向走，尋找黃色的「Times Car Rental」旗幟或接駁車。',
                                 mapQuery: '那霸機場',
+                                blogQuery: '那霸機場 抵達 租車 攻略',
                                 // Pexels: Plane window
                                 imgUrl: 'https://images.pexels.com/photos/2026324/pexels-photo-2026324.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '14:00', title: 'Times 租車 那霸機場店', category: 'transport', categoryLabel: '租車', 
-                                desc: 'Times Car Rental (タイムズカー)。', note: '檢查嬰兒座椅是否安裝牢固。請準備好「台灣駕照」與「日文譯本」。Times 的招牌是黃色的喔！',
+                                desc: 'Times Car Rental (タイムズカー)。', 
+                                note: '檢查嬰兒座椅是否安裝牢固。請準備好「台灣駕照」與「日文譯本」。',
                                 mapQuery: 'タイムズカー 那覇空港店',
-                                // Pexels: Yellow car / Driving
+                                blogQuery: '沖繩 Times租車 教學',
+                                // Pexels: Yellow car
                                 imgUrl: 'https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '15:00', title: '瀨長島 Umikaji Terrace', category: 'food', categoryLabel: '下午茶', 
-                                desc: '白色希臘風建築，看飛機起降。', note: '推薦「幸福鬆餅」。階梯較多，建議阿嬤坐下方店面，不用爬太高。',
+                                desc: '純白希臘風建築，看飛機起降的絕佳地點。有許多小店可以逛。', 
+                                note: '推薦「幸福鬆餅 (Shiawase no Pancake)」。這裡階梯較多，建議阿嬤坐在下層店面看海即可，不用爬太高。',
                                 mapQuery: '瀨長島Umikaji Terrace',
-                                // Pexels: Pancakes
-                                imgUrl: 'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=800'
+                                blogQuery: '瀨長島 幸福鬆餅 Vlog',
+                                // Pexels: White architecture by sea (Santorini style but close enough vibe)
+                                imgUrl: 'https://images.pexels.com/photos/1287460/pexels-photo-1287460.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '16:30', title: '民宿 Check-in', category: 'hotel', categoryLabel: '民宿', 
-                                desc: 'Travel Hostel naha-de.asobu', note: '位於那霸市中心，先讓阿嬤與寶寶午睡充電。記得找好付費停車場。',
+                                desc: 'Travel Hostel naha-de.asobu', 
+                                note: '位於那霸市中心，先讓阿嬤與寶寶午睡充電。記得先找好附近的付費停車場 (Coin Parking)。',
                                 mapQuery: 'Travel Hostel naha-de.asobu',
-                                // Pexels: Cozy room
+                                blogQuery: 'naha-de.asobu 住宿心得',
+                                // Pexels: Cozy bright room
                                 imgUrl: 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
-                                time: '18:30', title: '國際通', category: 'spot', categoryLabel: '逛街', 
-                                desc: '那霸最熱鬧的一條街，晚餐與採買。', note: '晚餐推薦：88牛排或民謠居酒屋。',
-                                mapQuery: '那霸國際通',
-                                // Pexels: City street at night
-                                imgUrl: 'https://images.pexels.com/photos/2614818/pexels-photo-2614818.jpeg?auto=compress&cs=tinysrgb&w=800'
+                                time: '18:30', title: '晚餐：88牛排 或 民謠居酒屋', category: 'food', categoryLabel: '晚餐', 
+                                desc: '漫步國際通。推薦老牌「Steak House 88」或是有三線琴表演的「波照間」居酒屋。', 
+                                note: '國際通週日中午會封街變步行區，今天是週六車多請小心。阿嬤如果不想走太遠，這附近有很多選擇。',
+                                mapQuery: 'Steak House 88 Kokusai Dori',
+                                blogQuery: '沖繩 88牛排 國際通 美食',
+                                // Pexels: Steak dinner
+                                imgUrl: 'https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&w=800'
                             }
                         ]
                     },
@@ -253,25 +282,40 @@
                         theme: '美麗海水族館 · 唯一長途',
                         events: [
                             { 
+                                time: '08:30', title: '早餐：豬肉蛋飯糰 (Potama)', category: 'breakfast', categoryLabel: '早餐', 
+                                desc: '沖繩必吃！Pork Tamago Onigiri。', 
+                                note: '建議爸爸早起去買回來民宿吃，或是在牧志市場本店買完在車上吃，節省時間。推薦「炸蝦塔塔醬」口味。',
+                                mapQuery: 'Pork Tamago Onigiri牧志市場',
+                                blogQuery: '沖繩 豬肉蛋飯糰 推薦',
+                                // Pexels: Onigiri / Rice ball
+                                imgUrl: 'https://images.pexels.com/photos/12737656/pexels-photo-12737656.jpeg?auto=compress&cs=tinysrgb&w=800'
+                            },
+                            { 
                                 time: '09:30', title: '許田休息站', category: 'transport', categoryLabel: '休息', 
-                                desc: '沖繩最受歡迎的休息站，中途上廁所。', note: '務必在此購買水族館優惠門票，有阿嬤愛吃的黑糖冰淇淋。',
+                                desc: '沖繩最受歡迎的休息站，買優惠票的好地方。', 
+                                note: '務必在此購買水族館優惠門票！這裡的「黑糖冰淇淋」非常有名，阿嬤應該會喜歡吃甜的。',
                                 mapQuery: '許田休息站',
-                                // Pexels: Coastal road
-                                imgUrl: 'https://images.pexels.com/photos/1650829/pexels-photo-1650829.jpeg?auto=compress&cs=tinysrgb&w=800'
+                                blogQuery: '許田休息站 必買',
+                                // Pexels: Ice cream (Representing the famous brown sugar soft serve)
+                                imgUrl: 'https://images.pexels.com/photos/1362534/pexels-photo-1362534.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '11:30', title: '美麗海水族館', category: 'spot', categoryLabel: '景點', 
-                                desc: '欣賞黑潮之海巨大鯨鯊。', note: '13:00 有免費的海豚表演。午餐建議在園區內解決。',
+                                desc: '亞洲最大水族館之一，欣賞「黑潮之海」巨大水槽中的鯨鯊與鬼蝠魟。', 
+                                note: '13:00 有免費的戶外海豚表演 (Oki-chan Theater)，不用買票也能看。午餐建議直接在園區內餐廳解決，減少移動。',
                                 mapQuery: '沖繩美麗海水族館',
-                                // Pexels: Aquarium fish
-                                imgUrl: 'https://images.pexels.com/photos/2253818/pexels-photo-2253818.jpeg?auto=compress&cs=tinysrgb&w=800'
+                                blogQuery: '美麗海水族館 攻略 2025',
+                                // Pexels: Aquarium / Shark (Similar vibe to Churaumi)
+                                imgUrl: 'https://images.pexels.com/photos/325044/pexels-photo-325044.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '17:30', title: '回民宿休息', category: 'hotel', categoryLabel: '休息', 
-                                desc: '長途車程後的中場休息。', note: '司機與阿嬤補眠，晚上才有力氣吃飯。',
+                                desc: '長途車程後的中場休息。', 
+                                note: '司機與阿嬤補眠，晚上才有力氣吃飯。星禹在車上應該也睡飽了。',
                                 mapQuery: 'Travel Hostel naha-de.asobu',
-                                // Pexels: Relaxing/Bed
-                                imgUrl: 'https://images.pexels.com/photos/3771605/pexels-photo-3771605.jpeg?auto=compress&cs=tinysrgb&w=800'
+                                blogQuery: '',
+                                // Pexels: Sleeping baby / Bed
+                                imgUrl: 'https://images.pexels.com/photos/3875215/pexels-photo-3875215.jpeg?auto=compress&cs=tinysrgb&w=800'
                             }
                         ]
                     },
@@ -280,25 +324,40 @@
                         theme: '港川外人住宅 · 美國村',
                         events: [
                             { 
+                                time: '09:00', title: '早餐：C&C Breakfast', category: 'breakfast', categoryLabel: '早餐', 
+                                desc: '位於國際通巷弄的知名網美早午餐，舒芙蕾鬆餅很有名。', 
+                                note: '如果排隊人太多，可以改去附近的「味噌飯屋 丸安 (味噌めしや まるたま)」，是沖繩在地特色健康早餐。',
+                                mapQuery: 'C&C BREAKFAST OKINAWA',
+                                blogQuery: 'C&C Breakfast Okinawa',
+                                // Pexels: Pancakes / Brunch
+                                imgUrl: 'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=800'
+                            },
+                            { 
                                 time: '10:30', title: '港川外人住宅區', category: 'spot', categoryLabel: '景點', 
-                                desc: '美軍老宿舍改建的文青街道。', note: '必吃 oHacorte 水果塔。路較窄，開車請慢行。',
+                                desc: '前美軍眷舍改建的文青聚落，充滿馬卡龍色系的小房子，適合拍照。', 
+                                note: '必買「oHacorte」的水果塔。這裡路比較窄，單行道多，開車請慢行。街道平坦好推嬰兒車。',
                                 mapQuery: '港川外人住宅',
-                                // Pexels: Cute colorful house
-                                imgUrl: 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800'
+                                blogQuery: '港川外人住宅區 必買',
+                                // Pexels: Pastel colored house (Vibe match)
+                                imgUrl: 'https://images.pexels.com/photos/2067576/pexels-photo-2067576.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '13:30', title: '美國村 (American Village)', category: 'spot', categoryLabel: '景點', 
-                                desc: '充滿異國氛圍的購物區，海景步道。', note: '找間海景咖啡廳讓阿嬤坐下來吹冷氣，很好拍照。',
+                                desc: '充滿異國氛圍的大型戶外商場，有摩天輪地標與美麗的海景步道。', 
+                                note: '推薦「Zhyvago Coffee Works」海景咖啡廳，讓阿嬤坐下來喝咖啡吹冷氣看海。這裡很多寶可夢彩繪可以給寶寶拍照。',
                                 mapQuery: '美濱美國村',
-                                // Pexels: Ferris wheel
-                                imgUrl: 'https://images.pexels.com/photos/60230/pexels-photo-60230.jpeg?auto=compress&cs=tinysrgb&w=800'
+                                blogQuery: '美國村 必逛 2025',
+                                // Pexels: Ferris Wheel (Iconic symbol)
+                                imgUrl: 'https://images.pexels.com/photos/2263683/pexels-photo-2263683.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '18:30', title: 'San-A Naha Main Place', category: 'shopping', categoryLabel: '購物', 
-                                desc: '新都心地區當地人最愛的商場。', note: '超市很大，阿嬤應該會喜歡逛這裡的超市。',
+                                desc: '新都心地區當地人最愛的商場。', 
+                                note: '這裡的超市很大，阿嬤應該會喜歡逛這裡的日本超市，買些水果晚上吃。',
                                 mapQuery: 'San-A Naha Main Place',
-                                // Pexels: Supermarket/Mall
-                                imgUrl: 'https://images.pexels.com/photos/264507/pexels-photo-264507.jpeg?auto=compress&cs=tinysrgb&w=800'
+                                blogQuery: 'San-A Naha Main Place 必買',
+                                // Pexels: Shopping Mall Interior
+                                imgUrl: 'https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&cs=tinysrgb&w=800'
                             }
                         ]
                     },
@@ -307,24 +366,39 @@
                         theme: '神社祈福 · PARCO CITY',
                         events: [
                             { 
+                                time: '09:00', title: '早餐：味噌飯屋 (Misoshiru)', category: 'breakfast', categoryLabel: '早餐', 
+                                desc: '體驗沖繩獨特的「味噌湯定食」，味噌湯才是主角！', 
+                                note: '熱騰騰的味噌湯配飯，阿嬤一定吃得慣。推薦「Misoshiru Tei Hige (みそ汁亭 秀)」。',
+                                mapQuery: 'みそ汁亭 秀',
+                                blogQuery: '沖繩 味噌湯定食',
+                                // Pexels: Miso soup Japanese set meal
+                                imgUrl: 'https://images.pexels.com/photos/2098139/pexels-photo-2098139.jpeg?auto=compress&cs=tinysrgb&w=800'
+                            },
+                            { 
                                 time: '10:30', title: '波上宮', category: 'spot', categoryLabel: '景點', 
-                                desc: '懸崖上的神社，沖繩總鎮守。', note: '可買「書包御守」給寶寶。旁邊有沙灘。',
+                                desc: '那霸市區唯一的沙灘神社，建立在懸崖上，紅瓦建築很有沖繩特色。', 
+                                note: '可以買個可愛的「書包御守」給寶寶保平安。旁邊有波之上海灘，可以下去踩踩沙。',
                                 mapQuery: '波上宮',
-                                // Pexels: Japanese Shrine (Generic but stable)
-                                imgUrl: 'https://images.pexels.com/photos/402028/pexels-photo-402028.jpeg?auto=compress&cs=tinysrgb&w=800'
+                                blogQuery: '波上宮 參拜',
+                                // Pexels: Red Japanese Architecture (Vibe match for Shrine)
+                                imgUrl: 'https://images.pexels.com/photos/161251/senso-ji-temple-japan-kyoto-landmark-161251.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '11:30', title: '浦添 PARCO CITY', category: 'shopping', categoryLabel: '購物', 
-                                desc: '全沖繩最大、育嬰設施最完善的商城。', note: '推薦 Akachan Honpo。午餐去美食街有無敵海景，阿嬤可以坐著看海。',
+                                desc: '全沖繩最新最大的海景商城，育嬰設施完善，冷氣涼爽。', 
+                                note: '推薦逛 2F 的「Akachan Honpo (阿卡將)」買寶寶用品。午餐去美食街有無敵海景，阿嬤可以坐著看海吃烏龍麵。',
                                 mapQuery: 'PARCO CITY 沖繩',
-                                // Pexels: Modern building/Sea view
+                                blogQuery: 'PARCO CITY 沖繩 必買',
+                                // Pexels: Modern building interior
                                 imgUrl: 'https://images.pexels.com/photos/3057960/pexels-photo-3057960.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '18:30', title: '晚餐：阿古豬火鍋', category: 'food', categoryLabel: '大餐', 
-                                desc: '享用沖繩特產 Agu 豬肉。', note: '推薦「まつもと」或「溫野菜」，請提前訂位。',
-                                mapQuery: '那霸 阿古豬火鍋',
-                                // Pexels: Hotpot
+                                desc: '享用沖繩特產 Agu 豬肉，口感清爽不油膩。', 
+                                note: '推薦「Agu shabu-shabu MatsuMoto (まつもと)」(需預約) 或連鎖的「溫野菜」。最後一晚吃好一點！',
+                                mapQuery: 'Agu shabu-shabu MatsuMoto',
+                                blogQuery: '沖繩 阿古豬火鍋 推薦',
+                                // Pexels: Hotpot / Shabu shabu
                                 imgUrl: 'https://images.pexels.com/photos/628776/pexels-photo-628776.jpeg?auto=compress&cs=tinysrgb&w=800'
                             }
                         ]
@@ -334,24 +408,39 @@
                         theme: '系滿魚市場 · Outlet',
                         events: [
                             { 
+                                time: '09:30', title: '早餐：便利商店挖寶', category: 'breakfast', categoryLabel: '早餐', 
+                                desc: '退房日講求效率，體驗日本超商 (Lawson/FamilyMart) 美食。', 
+                                note: '買些炸雞君、優格、麵包，在車上或民宿輕鬆吃完整理行李。',
+                                mapQuery: 'Lawson Naha',
+                                blogQuery: '日本便利商店 必吃 2025',
+                                // Pexels: Coffee and Croissant (Simple breakfast vibe)
+                                imgUrl: 'https://images.pexels.com/photos/2074130/pexels-photo-2074130.jpeg?auto=compress&cs=tinysrgb&w=800'
+                            },
+                            { 
                                 time: '10:30', title: '系滿魚市場', category: 'food', categoryLabel: '美食', 
-                                desc: '現買現吃的生魚片、焗烤龍蝦。', note: '就在還車點附近，價格便宜新鮮，阿嬤最愛這味。',
+                                desc: '充滿在地活力的魚市場，可以挑選想吃的海鮮現場享用。', 
+                                note: '就在還車點附近。推薦現切生魚片、焗烤龍蝦、還有巨大的炸蝦，價格便宜新鮮，阿嬤最愛這味。',
                                 mapQuery: '系滿魚市場',
-                                // Pexels: Seafood
+                                blogQuery: '系滿魚市場 必吃',
+                                // Pexels: Fresh Seafood / Sashimi vibe
                                 imgUrl: 'https://images.pexels.com/photos/8966141/pexels-photo-8966141.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '12:00', title: 'Ashibinaa Outlet', category: 'shopping', categoryLabel: '購物', 
-                                desc: '回國前最後衝刺。', note: '戶外商場，若下雨可改去隔壁 iias。',
+                                desc: '距離機場最近的 Outlet，回國前最後衝刺。', 
+                                note: '戶外商場風大，請幫寶寶加外套。若下雨或太熱，可改去隔壁室內的 iias 商場。',
                                 mapQuery: 'Ashibinaa Outlet',
-                                // Pexels: Shopping bags/Walking
+                                blogQuery: 'Ashibinaa Outlet 品牌',
+                                // Pexels: Shopping bags / Outdoor mall vibe
                                 imgUrl: 'https://images.pexels.com/photos/298863/pexels-photo-298863.jpeg?auto=compress&cs=tinysrgb&w=800'
                             },
                             { 
                                 time: '16:00', title: '還車 / 機場', category: 'transport', categoryLabel: '返家', 
-                                desc: 'Times 還車後搭接駁車至機場。', note: '記得加滿油。機場國內線必買「豬肉蛋飯糰」。',
+                                desc: 'Times 還車後搭接駁車至機場。', 
+                                note: '記得在附近的加油站把油加滿 (Regular)。機場國內線必買「豬肉蛋飯糰」帶上飛機吃。',
                                 mapQuery: 'タイムズカー 那覇空港店',
-                                // Pexels: Airplane wing
+                                blogQuery: '那霸機場 伴手禮',
+                                // Pexels: Airplane wing window view
                                 imgUrl: 'https://images.pexels.com/photos/1036808/pexels-photo-1036808.jpeg?auto=compress&cs=tinysrgb&w=800'
                             }
                         ]
